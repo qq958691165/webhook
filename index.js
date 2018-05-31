@@ -11,7 +11,7 @@ app.get('/webhook', function (req, res) {
 
         var commands = [
             'cd ' + data[pro],
-            'D:',
+            //'D:',//windows加盘符才能进入所需目录
             'git pull'
         ].join(' && ');
 
