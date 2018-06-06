@@ -1,38 +1,30 @@
-var express = require('express');
-var app = express();
+var http = require('http');
 var rf=require("fs");
-
-app.get('/webhook', function (req, res) {
-
+var server = http.createServer(function (req, res) {
+    res.writeHeader(200, {'Content-type': 'text/html; charset=utf-8',});
     var data=rf.readFileSync("config.json","utf-8");
     data=JSON.parse(data);
-    var pro=req.query.pro;
-    if (data[pro]){
-
+    var pro=req.url.replace('/project/','');
+    if (data[pro]) {
         var commands = [
             'cd ' + data[pro],
             //'D:',//windows加盘符才能进入所需目录
             'git pull'
         ].join(' && ');
-
-        console.log(commands);
         require('child_process').exec(commands, function(err, out, code) {
             if (err instanceof Error) {
-                res.status(500);
-                res.send(code);
+                console.log(code);
+                res.write(code);
+                res.end();
             }else {
-                res.send('ok');
+                res.write('ok');
+                res.end();
             }
-
         });
-    } else{
-        res.send('pro not find');
+    }else{
+        res.write('project not found,please fetch "/project/[project name]"');
+        res.end();
     }
 });
-
-var server = app.listen(3000, function () {
-    var host = server.address().address;
-    var port = server.address().port;
-
-    console.log('Example app listening at http://%s:%s', host, port);
-});
+server.listen(3000);
+console.log('listen at 3000');
