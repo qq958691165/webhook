@@ -3,6 +3,11 @@ var rf=require("fs");
 var server = http.createServer(function (req, res) {
     var data=rf.readFileSync("config.json","utf-8");
     data=JSON.parse(data);
+    var r={
+        code:0,
+        msg:'no project'
+    };
+    res.writeHeader(200,{'Content-Type':'text/json'});
     var pro=req.url.replace('/project/','');
     if (data[pro]) {
         var commands = [
@@ -12,18 +17,17 @@ var server = http.createServer(function (req, res) {
         ].join(' && ');
         require('child_process').exec(commands, function(err, out, code) {
             if (err instanceof Error) {
-                res.writeHeader(500);
-                res.write(code);
-                res.end();
+                r.code=500;
+                r.msg=code;
             }else {
-                res.writeHeader(200);
-                res.write('ok');
-                res.end();
+                r.code=200;
+                r.msg='ok';
             }
+            res.write(JSON.stringify(r));
+            res.end();
         });
     }else{
-        res.writeHeader(404);
-        res.write('project not found,please fetch "/project/[project name]"');
+        res.write(JSON.stringify(r));
         res.end();
     }
 });
