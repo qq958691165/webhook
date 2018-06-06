@@ -1,7 +1,6 @@
 var http = require('http');
 var rf=require("fs");
 var server = http.createServer(function (req, res) {
-    res.writeHeader(200, {'Content-type': 'text/html; charset=utf-8',});
     var data=rf.readFileSync("config.json","utf-8");
     data=JSON.parse(data);
     var pro=req.url.replace('/project/','');
@@ -13,14 +12,17 @@ var server = http.createServer(function (req, res) {
         ].join(' && ');
         require('child_process').exec(commands, function(err, out, code) {
             if (err instanceof Error) {
+                res.writeHeader(500);
                 res.write(code);
                 res.end();
             }else {
+                res.writeHeader(200);
                 res.write('ok');
                 res.end();
             }
         });
     }else{
+        res.writeHeader(404);
         res.write('project not found,please fetch "/project/[project name]"');
         res.end();
     }
