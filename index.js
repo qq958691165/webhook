@@ -13,7 +13,6 @@ var server = http.createServer(function (req, res) {
         ].join(' && ');
         require('child_process').exec(commands, function(err, out, code) {
             if (err instanceof Error) {
-                console.log(code);
                 res.write(code);
                 res.end();
             }else {
