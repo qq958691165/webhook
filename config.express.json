@@ -1,0 +1,12 @@
+{
+	"port":3000,
+	"password":"123456",
+	"projects":{
+		"test": {
+			"path": "test"
+		},
+		"hehe": {
+			"path": "test"
+		}
+	}
+}
