@@ -1,0 +1,30 @@
+.tar {
+  text-align: right;
+}
+.tac {
+  text-align: center;
+}
+#app .title {
+  padding: 10px;
+}
+#app .table-main {
+  text-align: center;
+}
+#app .table-main th {
+  text-align: center;
+}
+#app .table-main td {
+  vertical-align: middle;
+}
+#app .table-main td button {
+  background: #FFF;
+}
+#app .container-save {
+  display: block;
+  position: unset;
+  text-align: center;
+}
+#app .container-save .btn-save {
+  float: none;
+}
+/*# sourceMappingURL=app.css.map */

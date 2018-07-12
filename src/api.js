@@ -21,6 +21,42 @@ router.post('/login',function(req,res){
     }
 });
 
+router.get('/getConfig',function (req,res) {
+    var result={
+        code:0,
+        msg:'',
+        data:null
+    };
+    if (req.session.islogin) {
+        config = fs.readFileSync("config.express.json", "utf-8");
+        config=JSON.parse(config);
+        result.code=200;
+        result.msg='get ok';
+        result.data=config;
+    }else {
+        result.code=500;
+        result.msg='no login';
+    }
+    res.json(result);
+});
 
+router.post('/setConfig',function (req,res) {
+    var result={
+        code:0,
+        msg:'',
+        data:null
+    };
+    if (req.session.islogin) {
+        config = fs.writeFile("config.express.json", JSON.stringify(req.body.config));
+        // config=JSON.parse(config);
+        result.code=200;
+        result.msg='save ok';
+        // result.data=req.body;
+    }else {
+        result.code=500;
+        result.msg='no login';
+    }
+    res.json(result);
+});
 
 module.exports = router;

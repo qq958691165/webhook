@@ -1,29 +1,137 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
+<html lang="zh-cn" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Welcome</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
-    <style>
-        /* html{
-            height: 100%;
-        }
-        body{
-            height: 100%;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        } */
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/amazeui/2.7.2/css/amazeui.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/amazeui/2.7.2/js/amazeui.min.js"></script>
+    <link rel="stylesheet" href="/app.css">
 </head>
 <body>
-    <div class="container">
-        <? for(project in projects){ ?>
-        <div><?=project?></div>
-        <? } ?>
+    <div id="app">
+        <h2 class="am-text-primary am-text-lg title">Projects</h2>
+        <hr>
+        <table class="am-table am-table-striped am-table-hover table-main">
+            <thead>
+            <tr>
+                <th>name</th>
+                <th>type</th>
+                <th>path</th>
+                <th>extra_commands</th>
+                <th>operations</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(project,name) in config.projects">
+                <td><input type="text" v-model="name"></td>
+                <td>
+                    <select v-model="project.type">
+                        <option value="">null</option>
+                        <option value="git">git</option>
+                    </select>
+                </td>
+                <td><input type="text" v-model="project.path"></td>
+                <td><textarea cols="30" rows="2" v-model="project.commands"></textarea></td>
+                <td>
+                    <div class="am-btn-toolbar">
+                        <div class="am-btn-group am-btn-group-xs">
+                            <button class="am-btn am-btn-default am-btn-xs am-text-secondary" @click="test(name)"><span class="am-icon-pencil-square-o"></span> test</button>
+                            <button class="am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only" @click="del(name)"><span class="am-icon-trash-o"></span> delete</button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="am-u-md-12">
+            <div class="am-btn-group am-fr">
+                <button type="button" class="am-btn am-btn-default" @click="add"><span class="am-icon-plus"></span> Add</button>
+            </div>
+        </div>
+        <div>
+            <div class="am-btn-group container-save">
+                <button type="button" class="am-btn am-btn-default btn-save" @click="save"><span class="am-icon-save"></span> Save</button>
+            </div>
+        </div>
     </div>
+    <script>
+        var vm=new Vue({
+            el:"#app",
+            data:{
+                config:{
+                    projects:null,
+                    password:null,
+                    port:null
+                },
+                hostname:''
+            },
+            methods:{
+                del:function (name) {
+                    console.log(name);
+                    Vue.delete(this.config.projects,name);
+                },
+                test:function (name){
+                    axios.get('/webhook/'+name)
+                        .then(function (res) {
+                            res=res.data;
+                            if (res.code==200){
+                                alert("test ok");
+                            } else{
+                                alert(res.msg);
+                            }
+                        });
+                },
+                add:function () {
+                    var name='';
+                    if (name=prompt("please input project name")){
+                        Vue.set(this.config.projects,name,{
+                            path:"",
+                            commands:""
+                        });
+                        return true;
+                    }
+                    this.add();
+                },
+                save:function () {
+                    axios.post('/api/setConfig',{config:this.config})
+                        .then(function (res) {
+                            res=res.data
+                            if (res.code==200){
+                                alert("save ok");
+                                location.reload();
+                            } else {
+                                alert(res.msg);
+                                location.href='/login';
+                            }
+                        });
+                }
+            },
+            created:function(){
+                var that=this;
+                axios.get('/api/getConfig')
+                    .then(function (res) {
+                        res=res.data;
+                        if (res.code==200){
+                            var data=res.data;
+                            for (i in data){
+                                that.config[i]=data[i];
+                            }
+                        } else {
+                            alert(res.msg);
+                            location.href='/login';
+                        }
+                    });
+            },
+            mounted:function () {
+                this.hostname=location.origin;
+            }
+        });
+    </script>
 </body>
 </html>
