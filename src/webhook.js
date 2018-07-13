@@ -9,7 +9,7 @@ router.get('/*',function(req,res){
         msg:"not handle"
     };
 
-    config=fs.readFileSync("config.express.json","utf-8");
+    config=fs.readFileSync("config.json","utf-8");
     config=JSON.parse(config);
     var key=req.originalUrl.replace('/webhook/','');
     var project;
@@ -27,7 +27,6 @@ router.get('/*',function(req,res){
         }
         var extra_commands=project.commands.split("\n");
         commands=commands.concat(extra_commands);
-        console.log(commands);
 
         commands=commands.join(' && ');
         require('child_process').exec(commands, function(err, out, code) {

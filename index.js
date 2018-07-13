@@ -1,35 +1,57 @@
-var http = require('http');
-var rf=require("fs");
-var server = http.createServer(function (req, res) {
-    var data=rf.readFileSync("config.json","utf-8");
-    data=JSON.parse(data);
-    var r={
-        code:0,
-        msg:'no project'
-    };
-    res.writeHeader(200,{'Content-Type':'text/json'});
-    var pro=req.url.replace('/project/','');
-    if (data[pro]) {
-        var commands = [
-            'cd ' + data[pro],
-            //'D:',//windows加盘符才能进入所需目录
-            'git pull'
-        ].join(' && ');
-        require('child_process').exec(commands, function(err, out, code) {
-            if (err instanceof Error) {
-                r.code=500;
-                r.msg=code;
-            }else {
-                r.code=200;
-                r.msg='ok';
-            }
-            res.write(JSON.stringify(r));
-            res.end();
-        });
+var express = require('express');
+var session = require('express-session');
+var bodyParser = require('body-parser');
+var fs=require("fs");
+
+var ejs = require('ejs');
+ejs.delimiter="?";
+
+var config=fs.readFileSync("config.json","utf-8");
+config=JSON.parse(config);
+
+var app = express();
+app.use(session({
+    secret: config.token,
+}));
+
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+
+app.set('view engine','ejs');
+
+app.use(express.static('public'));
+
+app.get('/',function(req,res){
+    res.render('index');
+});
+
+app.get('/login',function(req,res){
+    if(req.session.islogin){
+        res.redirect('/admin');
     }else{
-        res.write(JSON.stringify(r));
-        res.end();
+        res.render('login');
     }
 });
-server.listen(3000);
-console.log('listen at 3000');
+
+app.get('/admin',function(req,res){
+    if(!req.session.islogin){
+        res.redirect('/login');
+    }else{
+        res.render('admin',{enKey:req.session.enKey});
+    }
+});
+
+//api
+var api=require('./src/api');
+app.use('/api',api);
+
+//webhook
+var webhook=require('./src/webhook');
+app.use('/webhook/*',webhook);
+
+var server = app.listen(config.port, function () {
+    var host = server.address().address;
+    var port = server.address().port;
+
+    console.log('Example app listening at http://%s:%s', host, port);
+});

@@ -7,11 +7,26 @@
     <title>Welcome</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/amazeui/2.7.2/css/amazeui.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.js"></script>
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>-->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/amazeui/2.7.2/js/amazeui.min.js"></script>
+    <script src="http://react.file.alimmdn.com/aes.js"></script>
     <link rel="stylesheet" href="/app.css">
+    <script>
+        var enKey='<?=enKey?>';
+        function decrypt(word,key){
+            var ckey = CryptoJS.enc.Utf8.parse(key);
+            var decrypt = CryptoJS.AES.decrypt(word, ckey, {mode:CryptoJS.mode.ECB,padding: CryptoJS.pad.Pkcs7});
+            return CryptoJS.enc.Utf8.stringify(decrypt).toString();
+        }
+        function encrypt(word,key){
+            var ckey = CryptoJS.enc.Utf8.parse(key);
+            var srcs = CryptoJS.enc.Utf8.parse(word);
+            var encrypted = CryptoJS.AES.encrypt(srcs, ckey, {mode:CryptoJS.mode.ECB,padding: CryptoJS.pad.Pkcs7});
+            return encrypted.toString();
+        }
+    </script>
 </head>
 <body>
     <div id="app">
@@ -57,10 +72,13 @@
         <div>
             <div class="am-btn-group container-save">
                 <button type="button" class="am-btn am-btn-default btn-save" @click="save"><span class="am-icon-save"></span> Save</button>
+                <button type="button" class="am-btn am-btn-default btn-save" @click="restart"><span class="am-icon-save"></span> Restart</button>
             </div>
         </div>
     </div>
     <script>
+
+
         var vm=new Vue({
             el:"#app",
             data:{
@@ -99,7 +117,8 @@
                     this.add();
                 },
                 save:function () {
-                    axios.post('/api/setConfig',{config:this.config})
+                    var data=encrypt(JSON.stringify(this.config),enKey);
+                    axios.post('/api/setConfig',{data:data})
                         .then(function (res) {
                             res=res.data
                             if (res.code==200){
@@ -108,6 +127,18 @@
                             } else {
                                 alert(res.msg);
                                 location.href='/login';
+                            }
+                        });
+                },
+                restart:function () {
+                    axios.get('/api/restart')
+                        .then(function (res) {
+                            res=res.data
+                            if (res.code==200){
+                                alert("restart ok");
+                                location.reload();
+                            } else {
+                                alert(res.msg);
                             }
                         });
                 }
@@ -119,6 +150,7 @@
                         res=res.data;
                         if (res.code==200){
                             var data=res.data;
+                            data=JSON.parse(decrypt(data,enKey));
                             for (i in data){
                                 that.config[i]=data[i];
                             }
