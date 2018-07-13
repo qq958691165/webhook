@@ -134,7 +134,10 @@
                             }
                         });
                 },
-                copy:function (project) {
+                copy:function (project,name) {
+                    if (clipboard){
+                        clipboard.destroy();
+                    }
                     clipboard=new ClipboardJS(".btn-copy");
                     clipboard.on('success',function () {
                         alert('copy success!');
