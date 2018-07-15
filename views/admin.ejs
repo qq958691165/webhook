@@ -4,18 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Welcome</title>
+    <title>Webhook-Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/amazeui/2.7.2/css/amazeui.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.js"></script>-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css" />
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.1/clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.1/clipboard.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/amazeui/2.7.2/js/amazeui.min.js"></script>
     <script src="http://react.file.alimmdn.com/aes.js"></script>
     <link rel="stylesheet" href="/app.css">
     <script>
+        //设置toastr
+        toastr.options={
+            timeOut:1000,
+            positionClass: "toast-top-center",
+            showEasing: "swing",
+            progressBar: true
+        }
+
+
         var enKey='<?=enKey?>';
         function decrypt(word,key){
             var ckey = CryptoJS.enc.Utf8.parse(key);
@@ -103,9 +114,9 @@
                         .then(function (res) {
                             res=res.data;
                             if (res.code==200){
-                                alert("test ok");
+                                toastr.success("test ok");
                             } else{
-                                alert(res.msg);
+                                toastr.info(res.msg);
                             }
                         });
                 },
@@ -126,10 +137,10 @@
                         .then(function (res) {
                             res=res.data
                             if (res.code==200){
-                                alert("save ok");
+                                toastr.success("save ok");
                                 location.reload();
                             } else {
-                                alert(res.msg);
+                                toastr.info(res.msg);
                                 location.href='/login';
                             }
                         });
@@ -140,7 +151,7 @@
                     }
                     clipboard=new ClipboardJS(".btn-copy");
                     clipboard.on('success',function () {
-                        alert('copy success!');
+                        toastr.success('copy success!');
                     });
                 }
                 // restart:function () {
@@ -148,10 +159,10 @@
                 //         .then(function (res) {
                 //             res=res.data
                 //             if (res.code==200){
-                //                 alert("restart ok");
+                //                 toastr.success("restart ok");
                 //                 location.reload();
                 //             } else {
-                //                 alert(res.msg);
+                //                 toastr.info(res.msg);
                 //             }
                 //         });
                 // }
@@ -168,7 +179,7 @@
                                 that.config[i]=data[i];
                             }
                         } else {
-                            alert(res.msg);
+                            toastr.info(res.msg);
                             location.href='/login';
                         }
                     });
