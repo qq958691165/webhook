@@ -16,7 +16,7 @@ app.use(session({
     resave: false,
     name: 'session',
     cookie: {
-        maxAge: 10 * 1000 // 有效期，单位是毫秒
+        maxAge: 3600 * 1000 // 有效期，单位是毫秒
     },
     saveUninitialized: false,
     // store: new FileStore()

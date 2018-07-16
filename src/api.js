@@ -105,7 +105,7 @@ router.get('/restart',function (req,res) {
     res.json(result);
     setTimeout(function() {
         process.send('restart-app');
-    },0);
+    },100);
 });
 
 module.exports = router;
