@@ -1,9 +1,9 @@
+var units = require('./units');
 var express = require('express');
 var router = express.Router();
 var fs=require("fs");
 var os = require("os");
 var crypto=require('crypto');
-
 
 var config=fs.readFileSync("config.json","utf-8");
 config=JSON.parse(config);
@@ -96,49 +96,16 @@ router.post('/setConfig',function (req,res) {
     res.json(result);
 });
 
-// router.get('/restart',function (req,res) {
-//     var result={
-//         code:200,
-//         msg:'ok',
-//         data:null
-//     };
-//
-//     if (os.platform()=='win32'){
-//         result.code=500;
-//         result.msg='this system not support';
-//         res.json(result);
-//         return false;
-//     }
-//     var commands=[];
-//     var pid=process.pid;
-//     var path=process.cwd();
-//     commands.push('sleep 1');
-//     commands.push('cd '+path);
-//     commands.push('kill '+pid);
-//     commands=commands.join(' && ');
-//     console.log(commands);
-//     res.json(result);
-//     require('child_process').exec(commands,function(err, out, code) {
-//         if (err instanceof Error) {
-//             console.log(code);
-//         }else {
-//             console.log('ok');
-//         }
-//     });
-//     commands=[];
-//     commands.push('sleep 2');
-//     commands.push('cd '+path);
-//     commands.push('nohup node index.js &');
-//     commands=commands.join(' && ');
-//     console.log(commands);
-//     require('child_process').exec(commands,function(err, out, code) {
-//         if (err instanceof Error) {
-//             console.log(code);
-//         }else {
-//             console.log('ok');
-//         }
-//     });
-//
-// });
+router.get('/restart',function (req,res) {
+    var result={
+        code:200,
+        msg:'ok',
+        data:null
+    };
+    res.json(result);
+    setTimeout(function() {
+        process.send('restart-app');
+    },0);
+});
 
 module.exports = router;

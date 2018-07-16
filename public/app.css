@@ -24,7 +24,9 @@
   position: unset;
   text-align: center;
 }
-#app .container-save .btn-save {
+#app .container-save .btn-save,
+#app .container-save .btn-setPassword,
+#app .container-save .btn-restart {
   float: none;
 }
 /*# sourceMappingURL=app.css.map */

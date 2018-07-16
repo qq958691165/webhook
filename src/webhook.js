@@ -1,3 +1,4 @@
+var units = require('./units');
 var fs=require("fs");
 var express = require('express');
 var router = express.Router();
@@ -11,7 +12,7 @@ router.get('/*',function(req,res){
 
     config=fs.readFileSync("config.json","utf-8");
     config=JSON.parse(config);
-    var key=req.originalUrl.replace('/webhook/','');
+    var key=/^\/webhook\/(\w+)\??.*$/.exec(req.originalUrl)[1];
     var project;
     if(project=config.projects[key]){
         var commands=[];

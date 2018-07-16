@@ -26,6 +26,9 @@
             progressBar: true
         }
 
+        function getRandom() {
+            return parseInt(Math.random()*10000);
+        }
 
         var enKey='<?=enKey?>';
         function decrypt(word,key){
@@ -87,7 +90,10 @@
         </div>
         <div>
             <div class="am-btn-group container-save">
-                <button type="button" class="am-btn am-btn-default btn-save" @click="save"><span class="am-icon-save"></span> Save</button>
+                <button type="button" class="am-btn am-btn-default btn btn-save" @click="save"><span class="am-icon-save"></span> Save</button>
+                <button type="button" class="am-btn am-btn-default btn btn-setPassword" @click="setPassword"><span class="am-icon-lock"></span> Set password</button>
+                <button type="button" class="am-btn am-btn-default btn btn-restart" @click="setPort"><span class="am-icon-pencil"></span> Set port</button>
+                <button type="button" class="am-btn am-btn-default btn btn-restart" @click="restart"><span class="am-icon-refresh"></span> Restart</button>
             </div>
         </div>
     </div>
@@ -110,11 +116,11 @@
                     Vue.delete(this.config.projects,name);
                 },
                 test:function (name){
-                    axios.get('/webhook/'+name)
+                    axios.get('/webhook/'+name+'?'+getRandom())
                         .then(function (res) {
                             res=res.data;
                             if (res.code==200){
-                                toastr.success("test ok");
+                                toastr.success("Test ok");
                             } else{
                                 toastr.info(res.msg);
                             }
@@ -122,26 +128,55 @@
                 },
                 add:function () {
                     var name='';
-                    if (name=prompt("please input project name")){
+                    if (name=prompt("Please input project name")){
                         Vue.set(this.config.projects,name,{
                             path:"",
                             commands:""
                         });
                         return true;
                     }
-                    this.add();
+                },
+                setPassword:function(){
+                    var password,repeat;
+                    password = prompt('Please input new password');
+                    if (!password){
+                        return;
+                    }
+                    repeat = prompt('Please input again');
+                    if (!repeat){
+                        return;
+                    }
+                    if (password === repeat) {
+                        this.config.password=password;
+                        this.save();
+                        this.restart();
+                    }else {
+                        toastr.info('Entered passwords differ!');
+                    }
+                },
+                setPort:function(){
+                    var port;
+                    if (port=prompt('Please input new port')){
+                        this.config.port=port;
+                        this.save();
+                        this.restart();
+                    }
                 },
                 save:function () {
-                    var data=encrypt(JSON.stringify(this.config),enKey);
+                    var data=encrypt(JSON.stringify(this.config,null,4),enKey);
                     axios.post('/api/setConfig',{data:data})
                         .then(function (res) {
                             res=res.data
                             if (res.code==200){
-                                toastr.success("save ok");
-                                location.reload();
+                                toastr.success("Save success");
+                                setTimeout(function () {
+                                    location.reload();
+                                },1000);
                             } else {
                                 toastr.info(res.msg);
-                                location.href='/login';
+                                setTimeout(function () {
+                                    location.href = '/login';
+                                },1000);
                             }
                         });
                 },
@@ -151,25 +186,25 @@
                     }
                     clipboard=new ClipboardJS(".btn-copy");
                     clipboard.on('success',function () {
-                        toastr.success('copy success!');
+                        toastr.success('Copy success!');
                     });
+                },
+                restart:function () {
+                    axios.get('/api/restart'+'?'+getRandom())
+                        .then(function (res) {
+                            res=res.data
+                            if (res.code==200){
+                                toastr.success("restart ok");
+                                location.reload();
+                            } else {
+                                toastr.info(res.msg);
+                            }
+                        });
                 }
-                // restart:function () {
-                //     axios.get('/api/restart')
-                //         .then(function (res) {
-                //             res=res.data
-                //             if (res.code==200){
-                //                 toastr.success("restart ok");
-                //                 location.reload();
-                //             } else {
-                //                 toastr.info(res.msg);
-                //             }
-                //         });
-                // }
             },
             created:function(){
                 var that=this;
-                axios.get('/api/getConfig')
+                axios.get('/api/getConfig'+'?'+getRandom())
                     .then(function (res) {
                         res=res.data;
                         if (res.code==200){
