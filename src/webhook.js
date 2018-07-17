@@ -43,6 +43,7 @@ router.all('/*',function(req,res){
                 result.code=500;
                 result.msg=""+code;
                 utils.log(code+"");
+                res.status(500);
             }else {
                 result.code=200;
                 result.msg="command run ok!";
@@ -50,6 +51,7 @@ router.all('/*',function(req,res){
             res.json(result);
         });
     }else{
+        res.status(500);
         result.code=500;
         result.msg="project not found!";
         res.json(result);
