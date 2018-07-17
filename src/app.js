@@ -1,4 +1,4 @@
-var units = require('./units');
+var utils = require('./utils');
 var express = require('express');
 var session = require('express-session');
 var bodyParser = require('body-parser');
@@ -60,5 +60,5 @@ var server = app.listen(config.port, function () {
     var host = server.address().address;
     var port = server.address().port;
 
-    units.log('Webhook listening at http://'+host+':'+port);
+    utils.log('Webhook listening at http://'+host+':'+port);
 });

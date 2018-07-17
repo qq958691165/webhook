@@ -1,10 +1,10 @@
-var units = require('./units');
+var utils = require('./utils');
 var fs=require("fs");
 var express = require('express');
 var router = express.Router();
 var os = require("os");
 
-router.get('/*',function(req,res){
+router.all('/*',function(req,res){
     var result={
         code:0,
         msg:"not handle"
@@ -37,12 +37,12 @@ router.get('/*',function(req,res){
         }
 
         commands=commands.join(' && ');
-        units.log(commands);
+        utils.log(commands);
         require('child_process').exec(commands, function(err, out, code) {
             if (err instanceof Error) {
                 result.code=500;
                 result.msg=""+code;
-                units.log(code+"");
+                utils.log(code+"");
             }else {
                 result.code=200;
                 result.msg="command run ok!";
