@@ -118,11 +118,16 @@
                 test:function (name){
                     axios.get('/webhook/'+name+'?'+getRandom())
                         .then(function (res) {
+                            console.log('===================>',res)
                             res=res.data;
                             if (res.code==200){
                                 toastr.success("Test ok");
                             } else{
                                 toastr.info(res.msg);
+                            }
+                        }).catch(function (error) {
+                            if (error.response) {
+                                toastr.info(error.response.data.msg);
                             }
                         });
                 },
