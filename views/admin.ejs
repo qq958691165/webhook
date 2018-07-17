@@ -62,7 +62,7 @@
             </thead>
             <tbody>
             <tr v-for="(project,name) in config.projects">
-                <td><input type="text" v-model="name"></td>
+                <td>{{name}}</td>
                 <td>
                     <select v-model="project.type">
                         <option value="">null</option>
