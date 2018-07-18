@@ -37,7 +37,7 @@ router.all('/*',function(req,res){
         }
 
         commands=commands.join(' && ');
-        utils.log(commands);
+        utils.log(commands+'!!--!!'+req.ip);
         require('child_process').exec(commands, function(err, out, code) {
             if (err instanceof Error) {
                 result.code=500;
