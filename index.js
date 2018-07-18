@@ -1,6 +1,9 @@
 var cp=require('child_process');
 var fs=require("fs");
 
+var config=fs.readFileSync("./config.json","utf-8");
+config=JSON.parse(config);
+
 var child;
 
 log=function (msg) {
@@ -18,4 +21,5 @@ function start(){
         }
     });
 }
+console.log('Server is running,listening port:'+config.port);
 start();
