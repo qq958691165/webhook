@@ -4,7 +4,7 @@ var express = require('express');
 var router = express.Router();
 var os = require("os");
 
-router.all('/*',function(req,res){
+router.post('/*',function(req,res){
     var result={
         code:0,
         msg:"not handle"

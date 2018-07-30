@@ -116,7 +116,7 @@
                     Vue.delete(this.config.projects,name);
                 },
                 test:function (name){
-                    axios.get('/webhook/'+name+'?'+getRandom())
+                    axios.post('/webhook/'+name)
                         .then(function (res) {
                             console.log('===================>',res)
                             res=res.data;
