@@ -26,31 +26,34 @@ app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 app.set('view engine','ejs');
-app.use(express.static('public'));
 
-app.get('/',function(req,res){
-    res.render('index');
-});
+if (config.web){
+    app.use(express.static('public'));
 
-app.get('/login',function(req,res){
-    if(req.session.islogin){
-        res.redirect('/admin');
-    }else{
-        res.render('login');
-    }
-});
+    app.get('/', function (req, res) {
+        res.render('index');
+    });
 
-app.get('/admin',function(req,res){
-    if(!req.session.islogin){
-        res.redirect('/login');
-    }else{
-        res.render('admin',{enKey:req.session.enKey});
-    }
-});
+    app.get('/login', function (req, res) {
+        if (req.session.islogin) {
+            res.redirect('/admin');
+        } else {
+            res.render('login');
+        }
+    });
 
-//api
-var api=require('./api');
-app.use('/api',api);
+    app.get('/admin', function (req, res) {
+        if (!req.session.islogin) {
+            res.redirect('/login');
+        } else {
+            res.render('admin', { enKey: req.session.enKey });
+        }
+    });
+
+    //api
+    var api = require('./api');
+    app.use('/api', api);
+}
 
 //webhook
 var webhook=require('./webhook');
