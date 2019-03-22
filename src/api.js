@@ -85,7 +85,7 @@ router.post('/setConfig',function (req,res) {
     if (req.session.islogin) {
         data=decode(req.body.data,req.session.enKey);
 
-        fs.writeFile("config.json", data);
+        fs.writeFileSync("config.json", data);
         result.code=200;
         result.msg='save ok';
     //     // result.data=req.body;
