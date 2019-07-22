@@ -22,4 +22,11 @@ function start(){
     });
 }
 console.log('Server is running,listening port:'+config.port);
-start();
+if (process.env.TEST){
+    setTimeout(()=>{
+        process.exit(0);
+    },3000);
+    start();
+} else {
+    start();
+}

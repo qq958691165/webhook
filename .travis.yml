@@ -3,6 +3,8 @@ node_js:
   - "7"
 cache:
   npm: false
+env:
+  - TEST=true
 before_script:
   - npm i
 script: node index.js
