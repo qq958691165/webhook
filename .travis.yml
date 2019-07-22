@@ -1,0 +1,8 @@
+language: node_js
+node_js:
+  - "7"
+cache:
+  npm: false
+before_script:
+  - npm i
+script: node index.js
