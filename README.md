@@ -1,4 +1,6 @@
 # webhook
+[![Build Status](https://travis-ci.org/qq958691165/webhook.svg?branch=master)](https://travis-ci.org/qq958691165/webhook)
+
 用于git的webhook服务,用法：<br>
   ````
   1.[c]npm install
