@@ -5,8 +5,6 @@ MAINTAINER jack "958691165@qq.com"
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 RUN echo 'Asia/Shanghai' >/etc/timezone
 
-RUN apt update
-
 RUN mkdir -p /root/webhook
 
 WORKDIR "/root/webhook"
