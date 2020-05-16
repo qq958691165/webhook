@@ -12,7 +12,7 @@ router.post('/*',function(req,res){
 
     config=fs.readFileSync("config.json","utf-8");
     config=JSON.parse(config);
-    var key=/^\/webhook\/(\w+)\??.*$/.exec(req.originalUrl)[1];
+    var key=/^\/webhook\/([\w-]+)\??.*$/.exec(req.originalUrl)[1];
     var project;
     if(project=config.projects[key]){
         var commands=[];
