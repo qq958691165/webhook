@@ -39,15 +39,16 @@ router.post('/*',function(req,res){
         commands=commands.join(' && ');
         utils.log(commands+'!!--!!'+req.ip);
         require('child_process').exec(commands, function(err, out, code) {
+            result.out=out;
             if (err instanceof Error) {
                 result.code=500;
                 result.msg=""+code;
-                utils.log(code+"");
                 res.status(500);
             }else {
                 result.code=200;
                 result.msg="command run ok!";
             }
+            utils.log(code+'::'+out);
             res.json(result);
         });
     }else{
